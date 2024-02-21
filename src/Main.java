@@ -5,5 +5,7 @@ public class Main {
         Graph.Node nodeB = graph.new Node();
 
         nodeA.connectTo(nodeB);
+
+
     }
 }
