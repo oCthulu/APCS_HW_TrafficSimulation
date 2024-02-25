@@ -1,12 +1,14 @@
 package graphs;
 
 import java.security.InvalidParameterException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Node<SELF extends Node<SELF>> {
     public final Graph<SELF> parent;
+
     protected LinkedList<SELF> connectedNodes = new LinkedList<>();
     public Node(Graph<SELF> parent) {
         this.parent = parent;
@@ -17,6 +19,14 @@ public class Node<SELF extends Node<SELF>> {
 
     public List<SELF> getConnectedNodes() {
         return Collections.unmodifiableList(connectedNodes);
+    }
+
+    public void setConnectedNodes(LinkedList<SELF> connectedNodes) {
+        this.connectedNodes = connectedNodes;
+    }
+
+    public void setConnectedNodes(Collection<SELF> connectedNodes) {
+        this.connectedNodes = new LinkedList<>(connectedNodes);
     }
 
     public void connectToOneWay(SELF other){

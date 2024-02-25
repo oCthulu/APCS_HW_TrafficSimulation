@@ -1,7 +1,10 @@
 import com.google.gson.JsonObject;
 import graphs.Graph;
+import graphs.Node;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class TrafficGraph extends Graph<Intersection> {
     public record Connection(Intersection a, Intersection b){
@@ -10,7 +13,7 @@ public class TrafficGraph extends Graph<Intersection> {
     public Connection[][] validObstaclePlacements;
     public Intersection endNode;
     public Intersection startNode;
-    public static void loadTrafficGraphFromJson(JsonObject json){
+    public static TrafficGraph loadTrafficGraphFromJson(JsonObject json){
         TrafficGraph graph = new TrafficGraph();
         Graph.loadFromJson(graph, json, Intersection.loader);
 
@@ -22,18 +25,21 @@ public class TrafficGraph extends Graph<Intersection> {
                 json.getAsJsonArray("obstaclePlacements")
                         .asList()
                         .stream()
-                        .map(connectionSet ->
-                                connectionSet
-                                        .getAsJsonArray()
-                                        .asList()
-                                        .stream()
-                                        .map(connection -> new Connection(
-                                                graph.nodes.get(connection.getAsJsonObject().get("a").getAsInt()),
-                                                graph.nodes.get(connection.getAsJsonObject().get("b").getAsInt())
-                                        ))
-                                        .toArray(Connection[]::new)
+                        .map(connectionSet -> connectionSet
+                                .getAsJsonArray()
+                                .asList()
+                                .stream()
+                                .map(connection -> new Connection(
+                                        graph.nodes.get(connection.getAsJsonObject().get("a").getAsInt()),
+                                        graph.nodes.get(connection.getAsJsonObject().get("b").getAsInt())
+                                ))
+                                .toArray(Connection[]::new)
                         )
                         .toArray(Connection[][]::new);
+
+        graph.setBaseState();
+
+        return graph;
     }
     public void setBaseState(){
         for(Intersection intersection : nodes){
@@ -62,17 +68,15 @@ public class TrafficGraph extends Graph<Intersection> {
 
     public void bakeDecisionLogic(){
         for(Intersection node : nodes){
-            if(node.getConnectedNodes().stream().noneMatch(n ->
-                    n.squareDistanceTo(endNode) < node.squareDistanceTo(endNode)
-            )){
-                continue;
-            }
+            List<Intersection> newNodes =
+                    node.getConnectedNodes()
+                        .stream()
+                        .filter(connected -> connected.squareDistanceTo(endNode) < node.squareDistanceTo(endNode))
+                        .toList();
 
-            for(Intersection connected : node.getConnectedNodes()){
-                if(connected.squareDistanceTo(endNode) < node.squareDistanceTo(endNode)){
-                    node.severConnectionOneWay(connected);
-                }
-            }
+            if(newNodes.isEmpty()) continue;
+
+            node.setConnectedNodes(newNodes);
         }
     }
 

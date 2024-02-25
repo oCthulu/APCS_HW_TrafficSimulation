@@ -20,10 +20,14 @@ public class Graph<NodeT extends Node<NodeT>> {
     }
 
     public static <NodeT extends Node<NodeT>> void loadFromJson(Graph<NodeT> graph, JsonObject json, NodeLoader<NodeT> loader){
+        if(graph.nodes.size() != 0){
+            throw new InvalidParameterException("\"graph\" parameter must have zero nodes.");
+        }
+
         JsonArray jsonNodes = json.getAsJsonArray("nodes");
 
         for(JsonElement element : jsonNodes) {
-            graph.addNode(loader.load((JsonObject) element, graph));
+            loader.load((JsonObject) element, graph);
         }
 
         for (int i = 0; i < graph.nodes.size(); i++) {
