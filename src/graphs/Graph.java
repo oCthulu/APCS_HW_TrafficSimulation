@@ -38,13 +38,16 @@ public class Graph<NodeT extends Node<NodeT>> {
         }
 
         for (int i = 0; i < graph.nodes.size(); i++) {
-            graph.nodes.get(i).connectedNodes =
-                    new LinkedList<>(
-                    ((JsonObject)jsonNodes.get(i))
+            graph.nodes.get(i).setConnectedNodes(
+                    jsonNodes.get(i)
+                            .getAsJsonObject()
                             .getAsJsonArray("connectedTo")
-                            .asList().stream().map(
+                            .asList()
+                            .stream()
+                            .map(
                                     index -> graph.nodes.get(index.getAsInt())
-                            ).toList()
+                            )
+                            .toList()
                     );
         }
     }
