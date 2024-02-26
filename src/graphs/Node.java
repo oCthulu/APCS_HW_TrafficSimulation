@@ -6,6 +6,13 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Base node class. Used as a superclass for node types for {@link Graph}.
+ * For APCSA project due 2/27/24.
+ * @author Andrew Denton
+ * @author Kieran Chalk
+ * @param <SELF> A self-referential type parameter
+ */
 public class Node<SELF extends Node<SELF>> {
     public final Graph<SELF> parent;
 

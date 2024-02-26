@@ -6,6 +6,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
+/**
+ * A subclass of {@link Graph} which has various helper methods and attributes for simulating traffic.
+ * For APCSA project due 2/27/24.
+ * @author Andrew Denton
+ * @author Kieran Chalk
+ */
 public class TrafficGraph extends Graph<Intersection> {
     public record Connection(Intersection a, Intersection b){
     }

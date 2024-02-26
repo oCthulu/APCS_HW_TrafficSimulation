@@ -5,6 +5,12 @@ import graphs.NodeLoader;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+/**
+ * A subtype of {@link Node} which stores various information important to simulating traffic.
+ * For APCSA project due 2/27/24.
+ * @author Andrew Denton
+ * @author Kieran Chalk
+ */
 public class Intersection extends Node<Intersection> {
     public static final NodeLoader<Intersection> loader = (node, graph) -> {
         return new Intersection(

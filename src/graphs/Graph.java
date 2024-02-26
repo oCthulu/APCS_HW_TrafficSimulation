@@ -8,6 +8,13 @@ import java.util.List;
 
 import com.google.gson.*;
 
+/**
+ * Graph class. Stores an arbitrary arrangement of connected nodes extending from {@link NodeT}.
+ * For APCSA project due 2/27/24.
+ * @author Andrew Denton
+ * @author Kieran Chalk
+ * @param <NodeT> The type of node to store.
+ */
 public class Graph<NodeT extends Node<NodeT>> {
     protected ArrayList<NodeT> nodes = new ArrayList<>();
 
