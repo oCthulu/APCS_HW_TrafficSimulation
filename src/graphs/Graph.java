@@ -27,7 +27,7 @@ public class Graph<NodeT extends Node<NodeT>> {
     }
 
     public static <NodeT extends Node<NodeT>> void loadFromJson(Graph<NodeT> graph, JsonObject json, NodeLoader<NodeT> loader){
-        if(graph.nodes.size() != 0){
+        if(!graph.nodes.isEmpty()){
             throw new InvalidParameterException("\"graph\" parameter must have zero nodes.");
         }
 

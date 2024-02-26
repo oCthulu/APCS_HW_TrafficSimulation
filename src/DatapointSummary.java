@@ -4,6 +4,6 @@ public record DatapointSummary(
         double min,
         double firstQuartile,
         double median,
-        double secondQuartile,
+        double thirdQuartile,
         double max) {
 }

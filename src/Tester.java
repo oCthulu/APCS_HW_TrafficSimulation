@@ -4,6 +4,10 @@ import com.google.gson.JsonParser;
 import javax.swing.*;
 import java.io.*;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Main tester class. Simulates traffic across a range of obstacle counts.
@@ -19,10 +23,15 @@ public class Tester {
         TrafficGraph graph = TrafficGraph.loadTrafficGraphFromJson(json.getAsJsonObject());
 
         //---------------------------------------simulation---------------------------------------
+        //The amount of simulations to run per number of obstacles.
         final int SIMULATION_COUNT = 250_000;
+        //Amount of simulations to run before re-randomizing obstacles.
         final int BATCH_SIZE = 5;
+        //The max amount of obstacles to simulate. The program will simulate obstacle counts from 0 to this number
         final int MAX_OBSTACLES = 15;
+        //The maximum amount of iterations to run per simulation
         final int MAX_PATH_LENGTH = 100;
+
         final Random random = new Random();
 
         System.out.println("Simulating traffic...");
@@ -34,7 +43,7 @@ public class Tester {
                 if (i % BATCH_SIZE == 0) {
                     //every BATCH_SIZE simulations, reset the graph, place the obstacles, and rebake the decision logic
                     graph.restoreBaseState();
-                    graph.placeObstacles(obstacleCount, new Random());
+                    graph.placeObstacles(obstacleCount, random);
                     graph.bakeDecisionLogic();
                 }
 
@@ -74,12 +83,15 @@ public class Tester {
 
         //---------------------------------------data saving---------------------------------------
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Would you like to save the results to a file (does not work yet)? (y/n)");
+        System.out.println("Would you like to save the results to a file? (y/n)");
         if(scanner.next().equalsIgnoreCase("y")){
+            System.out.println("Note that the save dialog may not be focused, so you might need to minimise this " +
+                    "program.");
             JFileChooser fc = new JFileChooser();
+            fc.setVisible(true);
             if(fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION){
-                //TODO: file saving
                 File file = fc.getSelectedFile();
+                saveData(file, data);
             }
         }
     }
@@ -87,13 +99,31 @@ public class Tester {
     public static void saveData(File file, DatapointSummary[] data){
         try {
             FileWriter writer = new FileWriter(file);
-            //TODO: save the file
+            saveDataRow(writer, IntStream.range(0, data.length).boxed(), "Obstacle Count", (Object::toString));
+            saveDataRow(writer, Arrays.stream(data), "Mean", (DatapointSummary::mean));
+            saveDataRow(writer, Arrays.stream(data), "Standard Deviation", (DatapointSummary::standardDeviation));
+            saveDataRow(writer, Arrays.stream(data), "Minimum", (DatapointSummary::min));
+            saveDataRow(writer, Arrays.stream(data), "First Quartile", (DatapointSummary::firstQuartile));
+            saveDataRow(writer, Arrays.stream(data), "Median", (DatapointSummary::median));
+            saveDataRow(writer, Arrays.stream(data), "Third Quartile", (DatapointSummary::thirdQuartile));
+            saveDataRow(writer, Arrays.stream(data), "Maximum", (DatapointSummary::max));
             writer.close();
         }
         catch (IOException e){
             System.out.println("Error writing file. Make sure this process has permissions to write to the specified " +
                     "location, and that no other processes are accessing the file.");
         }
+    }
+
+    public static <T> void saveDataRow(FileWriter file, Stream<T> data, String name, Function<T, Object> mapping)
+            throws IOException{
+        file.write(name);
+        file.write(
+                data.map(mapping)
+                .map(v -> "," + v.toString())
+                .collect(Collectors.joining())
+        );
+        file.write("\n");
     }
 
     public static String readFromStream(InputStream stream){
