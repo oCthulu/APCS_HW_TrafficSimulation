@@ -3,13 +3,14 @@ import com.google.gson.JsonParser;
 
 import javax.swing.*;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+/**
+ * Main tester class. Simulates traffic across a range of obstacle counts.
+ * For APCSA project due 2/27/24.
+ * @author Andrew Denton
+ * @author Kieran Chalk
+ */
 public class Tester {
     public static void main(String[] args) {
         //Create the graph. The graph object will be reused.
@@ -38,7 +39,7 @@ public class Tester {
                 }
 
                 //simulate and store into the graph
-                results[obstacleCount][i] = graph.runTraverseSimulation(100, random);
+                results[obstacleCount][i] = graph.runTraverseSimulation(MAX_PATH_LENGTH, random);
             }
         }
 
