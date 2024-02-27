@@ -23,6 +23,7 @@ public class Intersection extends Node<Intersection> {
     public double xPosition;
     public double yPosition;
 
+    /**The connections this intersection has in its base state (i.e. the state with no obstacles or baked logic)*/
     private Intersection[] baseConnections = new Intersection[0];
     public Intersection(Graph<Intersection> parent, double xPosition, double yPosition) {
         super(parent);
@@ -30,11 +31,17 @@ public class Intersection extends Node<Intersection> {
         this.yPosition = yPosition;
     }
 
+    /**
+     * Set the base state (i.e. the state with no obstacles or baked logic) to the current state
+     */
     public void setBaseState(){
         baseConnections = new Intersection[connectedNodes.size()];
         connectedNodes.toArray(baseConnections);
     }
 
+    /**
+     * Set the current state to the base state (i.e. the state with no obstacles or baked logic)
+     */
     public void restoreBaseState(){
         connectedNodes = new LinkedList<>(Arrays.asList(baseConnections));
     }

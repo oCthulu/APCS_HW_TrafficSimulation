@@ -16,6 +16,11 @@ public class TrafficGraph extends Graph<Intersection> {
     public record Connection(Intersection a, Intersection b){
     }
 
+    /**
+     * The valid connections to place obstacles on. This double array could potentially be jagged.
+     * Each row represents a set of connections "packaged" together, i.e., all of said connections will be broken
+     * together. This is useful for ensuring the forward and reverse connections are broken.
+     * */
     public Connection[][] validObstaclePlacements;
     public Intersection endNode;
     public Intersection startNode;
@@ -47,12 +52,19 @@ public class TrafficGraph extends Graph<Intersection> {
 
         return graph;
     }
+
+    /**
+     * Set the base state (i.e. the state with no obstacles or baked logic) to the current state
+     */
     public void setBaseState(){
         for(Intersection intersection : nodes){
             intersection.setBaseState();
         }
     }
 
+    /**
+     * Set the current state to the base state (i.e. the state with no obstacles or baked logic)
+     */
     public void restoreBaseState(){
         for(Intersection intersection : nodes){
             intersection.restoreBaseState();

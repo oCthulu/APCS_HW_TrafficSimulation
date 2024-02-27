@@ -1,5 +1,6 @@
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import javax.swing.*;
 import java.io.*;
@@ -18,9 +19,24 @@ import java.util.stream.Stream;
 public class Tester {
     public static void main(String[] args) {
         //Create the graph. The graph object will be reused.
-        String jsonText = readFromStream(Tester.class.getResourceAsStream("./graph.json"));
-        JsonElement json = JsonParser.parseString(jsonText);
-        TrafficGraph graph = TrafficGraph.loadTrafficGraphFromJson(json.getAsJsonObject());
+        JsonElement json;
+        TrafficGraph graph;
+        try {
+            String jsonText = readFromStream(Tester.class.getResourceAsStream("./graph.json"));
+            json = JsonParser.parseString(jsonText);
+        }
+        catch (JsonSyntaxException e){
+            System.out.println("Received malformed JSON file. Ensure the JSON file has no syntax errors.");
+            return;
+        }
+
+        try {
+            graph = TrafficGraph.loadTrafficGraphFromJson(json.getAsJsonObject());
+        }
+        catch (Exception e){
+            System.out.println("JSON file is formatted improperly. Make sure the file has all the proper fields.");
+            return;
+        }
 
         //---------------------------------------simulation---------------------------------------
         //The amount of simulations to run per number of obstacles.

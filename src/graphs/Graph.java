@@ -26,6 +26,14 @@ public class Graph<NodeT extends Node<NodeT>> {
         return Collections.unmodifiableList(nodes);
     }
 
+    /**
+     * Loads a JSON file into an existing graph
+     * @param graph The graph to load the data into
+     * @param json The json object to pull the data from
+     * @param loader A delegate which turns a {@link JsonObject} representing a node into a node object
+     * @param <NodeT> The node type of the graph
+     * @throws InvalidParameterException When the graph has nodes in it already.
+     */
     public static <NodeT extends Node<NodeT>> void loadFromJson(Graph<NodeT> graph, JsonObject json, NodeLoader<NodeT> loader){
         if(!graph.nodes.isEmpty()){
             throw new InvalidParameterException("\"graph\" parameter must have zero nodes.");
