@@ -40,11 +40,12 @@ public class Tester {
 
         //---------------------------------------simulation---------------------------------------
         //The amount of simulations to run per number of obstacles.
-        final int SIMULATION_COUNT = 250_000;
+        final int SIMULATION_COUNT = 1_250_000;
         //Amount of simulations to run before re-randomizing obstacles.
         final int BATCH_SIZE = 5;
-        //The max amount of obstacles to simulate. The program will simulate obstacle counts from 0 to this number
-        final int MAX_OBSTACLES = 15;
+        //The max amount of obstacles to simulate.
+        //The program will simulate obstacle counts from 0 (inclusive) to this number (exclusive)
+        final int MAX_OBSTACLES = 16;
         //The maximum amount of iterations to run per simulation
         final int MAX_PATH_LENGTH = 100;
 
